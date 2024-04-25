@@ -45,6 +45,8 @@ export const getEvent = async (req: Request, res: Response, next: NextFunction) 
 export const createEventController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { title, date, location, ticketAvailability, organizer } = req.body;
+    console.log(`title is: ${title} date is: ${date} location is: ${location} ticketAvailability is: ${ticketAvailability} organizer is: ${organizer} `);
+    
 
     const newEvent = await createEvent({
       title,

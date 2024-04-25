@@ -65,33 +65,49 @@ export const isAuthenticated = async (
   }
 };
 
-export const isEventOrganizer = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { id } = req.params;
-    const event = await EventModel.findById(id);
-    
-    if (!event) {
-      return res.status(404).json({
-        message: "Event not found",
-      });
-    }
 
-    const currentUserIdObj = get(req, "identity._id") as Types.ObjectId | undefined;
-    const currentUserId = currentUserIdObj ? currentUserIdObj.toString() : undefined;
+export const checkUserRole = (allowedRoles: string[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const sessionToken = req.cookies["GHOST-AUTH"];
+      if (!sessionToken) {
+        return res.status(403).json({
+          message: "No session token",
+        });
+      }
 
-    if (!currentUserId || event.organizer.toString() !== currentUserId) {
+      const existingUser = await getUserBySessionToken(sessionToken);
+      if (!existingUser) {
+        return res.status(403).json({
+          message: "No session token and user",
+        });
+      }
+
+      // Check if the user is an admin
+      if (allowedRoles.includes('admin') && existingUser.role === 'admin') {
+        merge(req, { identity: existingUser });
+        return next();
+      }
+
+      // Check if the user is a regular user
+      if (allowedRoles.includes('user') && existingUser.role === 'user') {
+        merge(req, { identity: existingUser });
+        return next();
+      }
+
       return res.status(403).json({
-        message: "You are not the organizer of this event",
+        message: "Insufficient privileges",
       });
+    } catch (error) {
+      console.log(error);
+      return res.sendStatus(400);
     }
-
-    next();
-  } catch (error) {
-    console.log(error);
-    return res.sendStatus(400);
-  }
+  };
 };
+
+
+// For admin privileges
+export const isAdmin = checkUserRole(['admin']);
+
+// For user privileges
+export const isUser = checkUserRole(['user']);
