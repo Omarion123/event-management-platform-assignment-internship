@@ -90,7 +90,9 @@ export const createEventController = async (req: Request, res: Response, next: N
 export const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { title, date, location, ticketAvailability, organizer } = req.body;
+    const { title, date, location, ticketAvailability } = req.body;
+    console.log(`title is: ${title} date is: ${date} location is: ${location} ticketAvailability is: ${ticketAvailability}`);
+    
 
     let result:any;
 
@@ -104,11 +106,14 @@ export const updateEvent = async (req: Request, res: Response, next: NextFunctio
       }
     }
     // Check if any of email, password, or username is missing, return a 400 status code if true
-    if (!title || !date || !location || !ticketAvailability || !organizer ) {
+    if (!title || !date || !location || !ticketAvailability ) {
       return res.status(400).json({
         message: "Check your inputs!",
       });
     }
+
+    console.log(result);
+    
 
     const updatedEvent = await updateEventById(id, {
       title,
@@ -116,7 +121,6 @@ export const updateEvent = async (req: Request, res: Response, next: NextFunctio
       location,
       profile: result.secure_url,
       ticketAvailability,
-      organizer,
     });
 
     if (!updatedEvent) {

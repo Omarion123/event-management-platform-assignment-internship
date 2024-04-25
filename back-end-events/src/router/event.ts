@@ -14,6 +14,6 @@ export default (router: express.Router) => {
   router.get('/events', getAllEvents);
   router.get('/events/:id', getEvent);
   router.post('/events', isAuthenticated, isAdmin, upload.single("profile"), createEventController);
-  router.patch('/events/:id', isAuthenticated, isAdmin, updateEvent);
+  router.patch('/events/:id', isAuthenticated, isAdmin, upload.single("profile"), updateEvent);
   router.delete('/events/:id', isAuthenticated, isAdmin, deleteEvent);
 };
