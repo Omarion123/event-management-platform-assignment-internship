@@ -46,16 +46,32 @@ export const getBookingController = async (req: Request, res: Response, next: Ne
 
 export const createBookingController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId, eventId, numberOfTickets, bookingDate } = req.body;
-    console.log(`userId is: ${userId}, eventId is: ${eventId}, numberOfTickets is: ${numberOfTickets}, bookingDate is: ${bookingDate},`);
+    const { eventId, numberOfTickets, bookingDate } = req.body;
+    console.log(`eventId is: ${eventId}, numberOfTickets is: ${numberOfTickets}, bookingDate is: ${bookingDate},`);
     
+
+    const sessionToken = req.cookies["GHOST-AUTH"];
+    if (!sessionToken) {
+      return res.status(403).json({
+        message: "No session token",
+      });
+    }
+
+    const existingUser = await getUserBySessionToken(sessionToken);
+    if (!existingUser) {
+      return res.status(403).json({
+        message: "No session token and user",
+      });
+    }
+    const id = existingUser._id.toString();
+
     // Check if any required data is missing
-    if (!userId || !eventId || !numberOfTickets || !bookingDate) {
+    if (!eventId || !numberOfTickets || !bookingDate) {
         return res.status(400).json({ message: 'Missing required data in request body' });
       }
 
     const newBooking = await createBooking({
-      userId,
+      userId: id,
       eventId,
       numberOfTickets,
       bookingDate,
