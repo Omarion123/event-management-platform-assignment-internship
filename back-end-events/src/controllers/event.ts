@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
 import { uploadToCloud } from "../utils/cloudinary";
 
 import {
@@ -7,14 +7,18 @@ import {
   createEvent,
   updateEventById,
   deleteEventById,
-} from '../db/event';
+} from "../db/event";
 
-export const getAllEvents = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllEvents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const events = await getEvents();
 
     return res.status(200).json({
-      message: 'Events retrieved successfully!',
+      message: "Events retrieved successfully!",
       events: events,
     });
   } catch (error) {
@@ -23,19 +27,23 @@ export const getAllEvents = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-export const getEvent = async (req: Request, res: Response, next: NextFunction) => {
+export const getEvent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
     const event = await getEventById(id);
     if (!event) {
       return res.status(404).json({
-        message: 'Event not found',
+        message: "Event not found",
       });
     }
 
     return res.status(200).json({
-      message: 'Event retrieved successfully!',
+      message: "Event retrieved successfully!",
       event: event,
     });
   } catch (error) {
@@ -44,12 +52,23 @@ export const getEvent = async (req: Request, res: Response, next: NextFunction) 
   }
 };
 
-export const createEventController = async (req: Request, res: Response, next: NextFunction) => {
+export const createEventController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { title, date, location, ticketAvailability, organizer } = req.body;
+    const {
+      title,
+      date,
+      location,
+      ticketAvailability,
+      organizer,
+      description,
+    } = req.body;
+    console.log(`title is: ${title} date is: ${date} location is: ${location} ticketAvailability is: ${ticketAvailability} organizer is: ${organizer} description is: ${description} `);
     
-
-    let result:any;
+    let result: any;
 
     // if(req.file) result = await uploadToCloud(req.file,res)
     if (req.file) {
@@ -61,24 +80,34 @@ export const createEventController = async (req: Request, res: Response, next: N
       }
     }
     // Check if any of email, password, or username is missing, return a 400 status code if true
-    if (!title || !date || !location || !ticketAvailability || !organizer ) {
+    if (
+      !title ||
+      !date ||
+      !location ||
+      !ticketAvailability ||
+      !organizer ||
+      !description
+    ) {
       return res.status(400).json({
         message: "Check your inputs!",
       });
     }
 
+    console.log('result is: ', result);
+    
 
     const newEvent = await createEvent({
       title,
       date,
       location,
+      description,
       profile: result.secure_url,
       ticketAvailability,
       organizer,
     });
 
     return res.status(201).json({
-      message: 'Event created successfully!',
+      message: "Event created successfully!",
       event: newEvent,
     });
   } catch (error) {
@@ -87,14 +116,16 @@ export const createEventController = async (req: Request, res: Response, next: N
   }
 };
 
-export const updateEvent = async (req: Request, res: Response, next: NextFunction) => {
+export const updateEvent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
-    const { title, date, location, ticketAvailability } = req.body;
-    console.log(`title is: ${title} date is: ${date} location is: ${location} ticketAvailability is: ${ticketAvailability}`);
-    
+    const { title, date, location, ticketAvailability, description } = req.body;
 
-    let result:any;
+    let result: any;
 
     // if(req.file) result = await uploadToCloud(req.file,res)
     if (req.file) {
@@ -106,31 +137,31 @@ export const updateEvent = async (req: Request, res: Response, next: NextFunctio
       }
     }
     // Check if any of email, password, or username is missing, return a 400 status code if true
-    if (!title || !date || !location || !ticketAvailability ) {
+    if (!title || !date || !location || !ticketAvailability || !description) {
       return res.status(400).json({
         message: "Check your inputs!",
       });
     }
 
     console.log(result);
-    
 
     const updatedEvent = await updateEventById(id, {
       title,
       date,
       location,
+      description,
       profile: result.secure_url,
       ticketAvailability,
     });
 
     if (!updatedEvent) {
       return res.status(404).json({
-        message: 'Event not found',
+        message: "Event not found",
       });
     }
 
     return res.status(200).json({
-      message: 'Event updated successfully!',
+      message: "Event updated successfully!",
       event: updatedEvent,
     });
   } catch (error) {
@@ -139,19 +170,23 @@ export const updateEvent = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const deleteEvent = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteEvent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
     const deletedEvent = await deleteEventById(id);
     if (!deletedEvent) {
       return res.status(404).json({
-        message: 'Event not found',
+        message: "Event not found",
       });
     }
 
     return res.status(200).json({
-      message: 'Event deleted successfully!',
+      message: "Event deleted successfully!",
       event: deletedEvent,
     });
   } catch (error) {
