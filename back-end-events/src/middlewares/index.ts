@@ -4,7 +4,6 @@ import { get, merge } from "lodash";
 import { getUserBySessionToken } from "../db/users";
 
 import { Types } from 'mongoose'; // Import Types from Mongoose
-import { EventModel } from '../db/event'
 
 export const isOwner = async (
   req: Request,
