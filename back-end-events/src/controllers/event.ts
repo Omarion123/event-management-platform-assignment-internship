@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
+import { uploadToCloud } from "../utils/cloudinary";
+
 import {
   getEvents,
   getEventById,
@@ -45,13 +47,32 @@ export const getEvent = async (req: Request, res: Response, next: NextFunction) 
 export const createEventController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { title, date, location, ticketAvailability, organizer } = req.body;
-    console.log(`title is: ${title} date is: ${date} location is: ${location} ticketAvailability is: ${ticketAvailability} organizer is: ${organizer} `);
     
+
+    let result:any;
+
+    // if(req.file) result = await uploadToCloud(req.file,res)
+    if (req.file) {
+      result = await uploadToCloud(req.file, res);
+      if (!result) {
+        return res.status(400).json({
+          message: "Error uploading profile picture",
+        });
+      }
+    }
+    // Check if any of email, password, or username is missing, return a 400 status code if true
+    if (!title || !date || !location || !ticketAvailability || !organizer ) {
+      return res.status(400).json({
+        message: "Check your inputs!",
+      });
+    }
+
 
     const newEvent = await createEvent({
       title,
       date,
       location,
+      profile: result.secure_url,
       ticketAvailability,
       organizer,
     });
@@ -71,10 +92,29 @@ export const updateEvent = async (req: Request, res: Response, next: NextFunctio
     const { id } = req.params;
     const { title, date, location, ticketAvailability, organizer } = req.body;
 
+    let result:any;
+
+    // if(req.file) result = await uploadToCloud(req.file,res)
+    if (req.file) {
+      result = await uploadToCloud(req.file, res);
+      if (!result) {
+        return res.status(400).json({
+          message: "Error uploading profile picture",
+        });
+      }
+    }
+    // Check if any of email, password, or username is missing, return a 400 status code if true
+    if (!title || !date || !location || !ticketAvailability || !organizer ) {
+      return res.status(400).json({
+        message: "Check your inputs!",
+      });
+    }
+
     const updatedEvent = await updateEventById(id, {
       title,
       date,
       location,
+      profile: result.secure_url,
       ticketAvailability,
       organizer,
     });

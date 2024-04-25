@@ -4,6 +4,7 @@ const eventSchema = new mongoose.Schema({
   title: { type: String, required: true },
   date: { type: Date, required: true },
   location: { type: String, required: true },
+  profile: { type: String, required: true },
   ticketAvailability: { type: Number, required: true, min: 0 },
   organizer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
