@@ -6,7 +6,7 @@ import {
   updateEvent,
   deleteEvent,
 } from '../controllers/event';
-import { isAuthenticated, isAdmin, isUser } from '../middlewares';
+import { isAuthenticated, isAdmin } from '../middlewares';
 
 export default (router: express.Router) => {
   router.get('/events', getAllEvents);
