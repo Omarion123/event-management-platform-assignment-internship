@@ -90,11 +90,16 @@ export const createBookingController = async (req: Request, res: Response, next:
 export const updateBookingController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const { userId, eventId, numberOfTickets, bookingDate, status } = req.body;
+    const { numberOfTickets, bookingDate, status } = req.body;
+
+    // Check if all required fields are present in the request body
+    if (!numberOfTickets || !bookingDate || !status) {
+        return res.status(400).json({
+          message: 'Invalid inputs. Please provide all required fields: numberOfTickets, bookingDate, status.',
+        });
+      }
 
     const updatedBooking = await updateBookingById(id, {
-      userId,
-      eventId,
       numberOfTickets,
       bookingDate,
       status,

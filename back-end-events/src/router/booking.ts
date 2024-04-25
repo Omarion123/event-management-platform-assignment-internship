@@ -14,6 +14,6 @@ export default (router: express.Router) => {
   router.get('/bookings/:id', isAdmin, getBookingController);
   router.post('/bookings', isAuthenticated, isUser, createBookingController);
   router.post('/bookings/:id', isAuthenticated, isUser, cancelBookingController);
-  router.put('/bookings/:id', isAuthenticated,isAdmin, updateBookingController);
+  router.patch('/bookings/:id', isAuthenticated,isAdmin, updateBookingController);
   router.delete('/bookings/:id', isAuthenticated, isAdmin, deleteBookingController);
 };
