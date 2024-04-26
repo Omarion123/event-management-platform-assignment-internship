@@ -4,6 +4,7 @@ import HomeLayout from "../layouts/HomeLayout";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Article from "../pages/Article";
+import UserBookList from "../pages/UserBookList"
 // import Forgot from "../pages/Forgot";
 // import DashLayout from "../layouts/DashLayout";
 // import Dashboard from "../pages/dashboard/Dashboard";
@@ -16,6 +17,7 @@ const AppRoutes = () => {
       <Routes>
         <Route exact path="/" element={<HomeLayout />}/>
         <Route path="/single/:123" element={<Article />}/>
+        <Route path="/userlist" element={<UserBookList />}/>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         {/* <Route path="" element={<App />} /> */}
