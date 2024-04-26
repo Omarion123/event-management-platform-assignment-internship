@@ -8,7 +8,7 @@ function BodyDashboardMain() {
       <div className="w-[10%] h-screen bg-someWhite">
         <SideNav />
       </div>
-      <div className="w-[90%] bg-white border-t-2">
+      <div className="w-[90%] bg-white border-t-2 p-6">
         <Outlet />
       </div>
     </div>
