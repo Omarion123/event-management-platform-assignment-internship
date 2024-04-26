@@ -11,8 +11,8 @@ import CustomButton from "../CustomButton";
 import CustomInput from "../CustomInput";
 function MainFooter() {
   return (
-    <div className="bg-someBlack text-white p-5">
-      <div className="min-h-60 md:flex justify-center gap-10">
+    <div className="bg-someBlack text-white p-5 md:pr-40 md:pl-40">
+      <div className="min-h-60 md:flex justify-between gap-10">
         <div>
           <div className="flex items-center">
             <img src={Icon} className="h-[30px]" alt="Icon" />

@@ -1,14 +1,14 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
-import HeroSection from "../components/HeroSection";
+import HeroSection from "../components/header/HeroSection";
 import MainFooter from "../components/footer/MainFooter";
+import Body from "../components/main/Body";
 
 const HomeLayout = () => {
   return (
     <div>
       <HeroSection />
       <div>
-        <Outlet />
+        <Body />
       </div>
       <MainFooter />
     </div>

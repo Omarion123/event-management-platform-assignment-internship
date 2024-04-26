@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import Icon from "../assets/images/Image 384.svg";
-import Brand from "../assets/images/YourEvent.svg";
-import CustomButton from "./CustomButton";
-import Hero from "../assets/images/hero.png";
+import Icon from "../../assets/images/Image 384.svg";
+import Brand from "../../assets/images/YourEvent.svg";
+import CustomButton from "../CustomButton";
+import Hero from "../../assets/images/hero.png";
 
 class HeroSection extends Component {
   render() {
@@ -12,7 +12,7 @@ class HeroSection extends Component {
       filter: "brightness(30%) contrast(70%)",
     };
     const overlayStyle = {
-      backgroundColor: 'rgba(0, 0, 0, 0.3)', // Adjust the opacity as needed
+      backgroundColor: "rgba(0, 0, 0, 0.3)", // Adjust the opacity as needed
     };
 
     return (
@@ -23,7 +23,7 @@ class HeroSection extends Component {
             <img src={Brand} className="h-[20px]" alt="Brand" />
           </div>
           <div className="flex gap-2 md:gap-5">
-            <CustomButton to="/register" style="bg-white text-blue-700 border">
+            <CustomButton to="/register" style="bg-white text-black border">
               Register
             </CustomButton>
             <CustomButton to="/login">Login</CustomButton>
