@@ -1,12 +1,18 @@
 import React from "react";
 import Icon from "../../assets/images/Image 384.svg";
 import Brand from "../../assets/images/YourEvent.svg";
-import { FaEnvelope  } from "react-icons/fa";
+import { FaEnvelope } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
+import { FaTwitter } from "react-icons/fa";
+import { FaFacebook } from "react-icons/fa";
+import { FaLinkedin } from "react-icons/fa";
+import { FaYoutube } from "react-icons/fa";
 import CustomButton from "../CustomButton";
+import CustomInput from "../CustomInput";
 function MainFooter() {
   return (
-    <div className="bg-someBlack text-white">
-      <div className="min-h-96">
+    <div className="bg-someBlack text-white p-5">
+      <div className="min-h-60 md:flex justify-center gap-10">
         <div>
           <div className="flex items-center">
             <img src={Icon} className="h-[30px]" alt="Icon" />
@@ -38,17 +44,77 @@ function MainFooter() {
         </div>
         <div>
           <h1 className="font-bold text-1xl text-2xl">Stay in the loop</h1>
-          <p className="pt-5">For product announcements and exclusive insights</p>
+          <p className="pt-5">
+            For product announcements and exclusive insights
+          </p>
           <div>
             <div className="h-[35px] w-[285px] flex justify-start items-center border border-green-500 pl-4 rounded-md mt-2">
               <FaEnvelope className="h-[15px]" />
-              <input type="text" placeholder="Input your email" className="bg-transparent h-[15px] outline-none border-none pl-2 " />
+              <CustomInput
+                type="text"
+                placeholder="Input your email"
+              />
             </div>
-            <CustomButton style="mt-2 mb-2">Subscribe</CustomButton>
+            <CustomButton style="mt-2 mb-2 w-[114px]">Subscribe</CustomButton>
           </div>
         </div>
       </div>
-      <div className="bg-yellow-500 h-[95px]"></div>
+      <div className="min-h-[60px] border-t-2 flex flex-col items-center md:flex-row md:justify-between">
+        <select
+          name="languages"
+          id="languages"
+          className="bg-transparent h-[35px] w-[199px] flex justify-between items-center border border-green-500 pl-4 rounded-md mt-2"
+        >
+          <option className="bg-transparent text-primary" value="volvo">
+            English
+          </option>
+          <option className="bg-transparent text-primary" value="saab">
+            French
+          </option>
+          <option className="bg-transparent text-primary" value="mercedes">
+            Kinyarwanda
+          </option>
+          <option className="bg-transparent text-primary" value="audi">
+            Swahili
+          </option>
+        </select>
+        <ul className="mt-3 md:flex justify-between gap-3">
+          <li>© 2022 Brand, Inc.</li>
+          <li className="flex items-center gap-3">
+            <div>
+              <FaStar />
+            </div>
+            <div>Privacy</div>
+          </li>
+          <li className="flex items-center gap-3">
+            <div>
+              <FaStar />
+            </div>
+            <div>Terms</div>
+          </li>
+          <li className="flex items-center gap-3">
+            <div>
+              <FaStar />
+            </div>
+            <div>Sitemap</div>
+          </li>
+        </ul>
+
+        <div className="flex mt-5 md:w-[120px]">
+          <div className="h-5 w-20 flex justify-center items-center">
+            <FaTwitter />
+          </div>
+          <div className="h-5 w-20 flex justify-center items-center">
+            <FaFacebook />
+          </div>
+          <div className="h-5 w-20 flex justify-center items-center">
+            <FaLinkedin />
+          </div>
+          <div className="h-5 w-20 flex justify-center items-center">
+            <FaYoutube />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
