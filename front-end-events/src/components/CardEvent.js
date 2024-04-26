@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaCalendar, FaLocationArrow } from 'react-icons/fa'; // Assuming you're using React Icons for FontAwesome
+import { FaCalendar, FaLocationArrow } from 'react-icons/fa'; 
 
 const Card = ({ RunImage, title, availableTickets, date, location }) => {
   return (

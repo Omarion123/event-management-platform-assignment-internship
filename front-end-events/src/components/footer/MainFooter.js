@@ -1,6 +1,6 @@
 import React from "react";
 import Icon from "../../assets/images/Image 384.svg";
-import Brand from "../../assets/images/YourEvent.svg";
+import Brand from "../../assets/images/YourEventFooter.svg";
 import { FaEnvelope } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
 import { FaTwitter } from "react-icons/fa";
