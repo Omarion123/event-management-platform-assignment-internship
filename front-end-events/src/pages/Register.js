@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Hero from "../assets/images/loginBack.jpg";
 import { FaCheckSquare } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import CustomButton from "../components/CustomButton";
 import { toast } from "react-toastify";
 
 function Register() {
