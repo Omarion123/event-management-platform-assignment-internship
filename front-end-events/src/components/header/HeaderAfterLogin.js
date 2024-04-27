@@ -5,6 +5,7 @@ import image2 from "../../assets/images/hero.png";
 import { FaBell } from "react-icons/fa";
 import { DownOutlined, SmileOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
+import { Link } from "react-router-dom";
 
 const HeaderAfterLogin = () => {
   const items = [
@@ -24,13 +25,11 @@ const HeaderAfterLogin = () => {
     {
       key: "2",
       label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com"
+        <Link
+          to="/userlist"
         >
           My booked events
-        </a>
+        </Link>
       ),
       icon: <SmileOutlined />,
     },
@@ -42,10 +41,12 @@ const HeaderAfterLogin = () => {
   ];
   return (
     <div className="h-14 bg-secondaryWhite flex justify-between items-center pr-2 pl-2 md:pr-5 md:pl-5">
-      <div className="flex items-center">
-        <img src={Icon} className="h-[35px]" alt="Icon" />
-        <img src={Brand} className="h-[20px]" alt="Brand" />
-      </div>
+      <Link to="/">
+        <div className="flex items-center">
+          <img src={Icon} className="h-[35px]" alt="Icon" />
+          <img src={Brand} className="h-[20px]" alt="Brand" />
+        </div>
+      </Link>
       <div className="flex gap-2 md:gap-5 items-center">
         <FaBell className="cursor-pointer text-grey"/>
         <div className="w-9 h-9 rounded-full">
