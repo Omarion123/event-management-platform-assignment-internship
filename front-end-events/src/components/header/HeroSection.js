@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Hero from "../../assets/images/hero.png";
-// import HeaderBeforeLogin from "./HeaderBeforeLogin";
+import HeaderBeforeLogin from "./HeaderBeforeLogin";
 import HeaderAfterLogin from "./HeaderAfterLogin";
 
 class HeroSection extends Component {
@@ -13,11 +13,13 @@ class HeroSection extends Component {
     const overlayStyle = {
       backgroundColor: "rgba(0, 0, 0, 0.3)", // Adjust the opacity as needed
     };
+    const sessionToken = localStorage.getItem("sessionToken");
+    // Check if sessionToken is available
+  const isLoggedIn = sessionToken !== null;
 
     return (
       <div>
-        {/* <HeaderBeforeLogin /> */}
-        <HeaderAfterLogin />
+        {isLoggedIn?<HeaderAfterLogin />:<HeaderBeforeLogin />}
         <div className="h-[300px] md:h-[469px] relative">
           <div
             style={heroStyle}
