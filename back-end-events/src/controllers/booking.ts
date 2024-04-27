@@ -50,11 +50,19 @@ export const createBookingController = async (req: Request, res: Response, next:
     console.log(`eventId is: ${eventId}, numberOfTickets is: ${numberOfTickets}, bookingDate is: ${bookingDate},`);
     
 
-    const sessionToken = req.cookies["GHOST-AUTH"];
-    if (!sessionToken) {
+    const authHeader = req.headers.authorization;
+    console.log(authHeader);
+    if (authHeader === undefined) {
       return res.status(403).json({
-        message: "No session token",
+        message: "Invalid session token undefined",
       });
+    }
+
+    let sessionToken: string | undefined;
+    if (authHeader.startsWith("Bearer ")) {
+      sessionToken = authHeader.substring(7); // Remove "Bearer " from the beginning
+    } else {
+      sessionToken = authHeader; // If "Bearer " is not present, use the entire header value as sessionToken
     }
 
     const existingUser = await getUserBySessionToken(sessionToken);
