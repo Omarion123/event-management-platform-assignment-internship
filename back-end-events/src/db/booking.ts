@@ -10,7 +10,7 @@ const bookingSchema = new mongoose.Schema({
 
 export const BookingModel = mongoose.model("Booking", bookingSchema);
 
-export const getAllBookings = () => BookingModel.find();
+export const getAllBookings = () => BookingModel.find().populate("eventId");
 
 export const getBookingById = (id: string) => BookingModel.findById(id);
 
