@@ -34,6 +34,7 @@ function Login() {
 
       // Save sessionToken to localStorage
       localStorage.setItem("sessionToken", user.authentication.sessionToken);
+      localStorage.setItem("userId", user._id);
 
       // Handle cookie if needed (not recommended for security reasons, see note below)
       if (cookie) {

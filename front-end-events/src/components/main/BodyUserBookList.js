@@ -6,10 +6,12 @@ import { FaCalendar, FaLocationArrow } from "react-icons/fa";
 
 function BodyUserBookList() {
   const [bookingList, setBookingList] = useState([]);
+
   useEffect(() => {
     const sessionToken = localStorage.getItem("sessionToken");
-    if (!sessionToken) {
-      console.error("Session token not found.");
+    const userId = localStorage.getItem("userId");
+    if (!sessionToken || !userId) {
+      console.error("Session token or user ID not found.");
       return;
     }
 
@@ -27,13 +29,14 @@ function BodyUserBookList() {
         return response.json();
       })
       .then((data) => {
-        setBookingList(data.bookings);
-        // Here you can use the fetched data directly
-        // console.log("Fetched bookings:", data.bookings);
+        // Filter bookings based on userId
+        const filteredBookings = data.bookings.filter((booking) => booking.userId === userId);
+        setBookingList(filteredBookings);
       })
       .catch((error) => console.error("Error fetching bookings:", error));
-    }, []);
-    console.log("Fetched bookings:", bookingList);
+  }, []);
+
+  console.log(bookingList);
 
   return (
     <div className="p-5 md:pr-40 md:pl-40">
