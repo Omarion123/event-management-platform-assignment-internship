@@ -1,10 +1,40 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Hero from "../../assets/images/hero.png";
 import CustomButton from "../CustomButton";
 import { FaEdit, FaSearch } from "react-icons/fa";
 import { FaCalendar, FaLocationArrow } from "react-icons/fa";
 
 function BodyUserBookList() {
+  const [bookingList, setBookingList] = useState([]);
+  useEffect(() => {
+    const sessionToken = localStorage.getItem("sessionToken");
+    if (!sessionToken) {
+      console.error("Session token not found.");
+      return;
+    }
+
+    fetch("https://event-management-platform-assignment.onrender.com/bookings", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${sessionToken}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok.");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setBookingList(data.bookings);
+        // Here you can use the fetched data directly
+        // console.log("Fetched bookings:", data.bookings);
+      })
+      .catch((error) => console.error("Error fetching bookings:", error));
+    }, []);
+    console.log("Fetched bookings:", bookingList);
+
   return (
     <div className="p-5 md:pr-40 md:pl-40">
       <div className="">
@@ -62,77 +92,32 @@ function BodyUserBookList() {
             </div>
             <div className="border border-someWhite w-full md:w-[383px] h-[300px] md:h-auto pl-5 flex flex-col justify-evenly">
               <div className="border-b-2 border-b-someWhite">
-                <p className="font-bold text-primary text-[20px]">February 20 | 08:00 PM</p>
-                <p className="font-bold"><span className="text-primary mt-3">2 Tickets</span> total $162</p>
+                <p className="font-bold text-primary text-[20px]">
+                  February 20 | 08:00 PM
+                </p>
+                <p className="font-bold">
+                  <span className="text-primary mt-3">2 Tickets</span> total
+                  $162
+                </p>
               </div>
               <div className="border-b-2 border-b-someWhite">
-                <p className="font-bold text-sm text-someBlack mt-2">Rock Revolt: Power and Passion Unite</p>
+                <p className="font-bold text-sm text-someBlack mt-2">
+                  Rock Revolt: Power and Passion Unite
+                </p>
                 <div className="flex items-center gap-3">
-                  <FaCalendar className="text-grey"/>
-                  <p className="text-grey text-sm">Saturday, February 20 | 08:00 PM</p>
+                  <FaCalendar className="text-grey" />
+                  <p className="text-grey text-sm">
+                    Saturday, February 20 | 08:00 PM
+                  </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <FaLocationArrow className="text-grey"/>
+                  <FaLocationArrow className="text-grey" />
                   <p className="text-grey text-sm">New York, NY</p>
                 </div>
               </div>
               <div>
                 <CustomButton style={"bg-colorTwo text-xs w-[100px]"}>
-                    Cancel Ticket
-                </CustomButton>
-              </div>
-            </div>
-          </div>
-          <div className="mt-5 flex flex-col md:flex-row">
-            <div className="w-[350px] md:w-[383px] h-[221px] bg-grey rounded-md">
-              <img src={Hero} className="w-full h-full rounded-md" />
-            </div>
-            <div className="border border-someWhite w-full md:w-[383px] h-[300px] md:h-auto pl-5 flex flex-col justify-evenly">
-              <div className="border-b-2 border-b-someWhite">
-                <p className="font-bold text-primary text-[20px]">February 20 | 08:00 PM</p>
-                <p className="font-bold"><span className="text-primary mt-3">2 Tickets</span> total $162</p>
-              </div>
-              <div className="border-b-2 border-b-someWhite">
-                <p className="font-bold text-sm text-someBlack mt-2">Rock Revolt: Power and Passion Unite</p>
-                <div className="flex items-center gap-3">
-                  <FaCalendar className="text-grey"/>
-                  <p className="text-grey text-sm">Saturday, February 20 | 08:00 PM</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <FaLocationArrow className="text-grey"/>
-                  <p className="text-grey text-sm">New York, NY</p>
-                </div>
-              </div>
-              <div>
-                <CustomButton style={"bg-colorTwo text-xs w-[100px]"}>
-                    Cancel Ticket
-                </CustomButton>
-              </div>
-            </div>
-          </div>
-          <div className="mt-5 flex flex-col md:flex-row">
-            <div className="w-[350px] md:w-[383px] h-[221px] bg-grey rounded-md">
-              <img src={Hero} className="w-full h-full rounded-md" />
-            </div>
-            <div className="border border-someWhite w-full md:w-[383px] h-[300px] md:h-auto pl-5 flex flex-col justify-evenly">
-              <div className="border-b-2 border-b-someWhite">
-                <p className="font-bold text-primary text-[20px]">February 20 | 08:00 PM</p>
-                <p className="font-bold"><span className="text-primary mt-3">2 Tickets</span> total $162</p>
-              </div>
-              <div className="border-b-2 border-b-someWhite">
-                <p className="font-bold text-sm text-someBlack mt-2">Rock Revolt: Power and Passion Unite</p>
-                <div className="flex items-center gap-3">
-                  <FaCalendar className="text-grey"/>
-                  <p className="text-grey text-sm">Saturday, February 20 | 08:00 PM</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <FaLocationArrow className="text-grey"/>
-                  <p className="text-grey text-sm">New York, NY</p>
-                </div>
-              </div>
-              <div>
-                <CustomButton style={"bg-colorTwo text-xs w-[100px]"}>
-                    Cancel Ticket
+                  Cancel Ticket
                 </CustomButton>
               </div>
             </div>
