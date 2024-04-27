@@ -5,49 +5,53 @@ import { FaEdit, FaSearch } from "react-icons/fa";
 import { FaCalendar, FaLocationArrow } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-
 function BodyUserBookList() {
   const [bookingList, setBookingList] = useState([]);
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem("sessionToken");
-    const userId = localStorage.getItem("userId");
-    if (!sessionToken || !userId) {
-      console.error("Session token or user ID not found.");
-      return;
-    }
-
-    fetch(
-      "https://event-management-platform-assignment.onrender.com/bookings",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${sessionToken}`,
-          "Content-Type": "application/json",
-        },
+    // Function to fetch bookings
+    const fetchBookings = async () => {
+      const sessionToken = localStorage.getItem("sessionToken");
+      const userId = localStorage.getItem("userId");
+      if (!sessionToken || !userId) {
+        console.error("Session token or user ID not found.");
+        return;
       }
-    )
-      .then((response) => {
+
+      try {
+        const response = await fetch(
+          "https://event-management-platform-assignment.onrender.com/bookings",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${sessionToken}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
         if (!response.ok) {
           throw new Error("Network response was not ok.");
         }
-        return response.json();
-      })
-      .then((data) => {
+
+        const data = await response.json();
         // Filter bookings based on userId
         const filteredBookings = data.bookings.filter(
           (booking) => booking.userId === userId
         );
         setBookingList(filteredBookings);
-      })
-      .catch((error) => console.error("Error fetching bookings:", error));
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
+    };
+
+    // Call the fetchBookings function
+    fetchBookings();
   }, []);
 
   console.log(bookingList);
 
-  const bookingId = "662a4075fb1458dd9821b60c"; // Your booking ID
-
-  const handleCancelBooking = async (event) => {
+  const handleCancelBooking = async (event, bookingID) => {
     event.preventDefault();
 
     // Retrieve sessionToken from localStorage
@@ -62,7 +66,7 @@ function BodyUserBookList() {
     try {
       // Fetch cancellation request
       const response = await fetch(
-        `https://event-management-platform-assignment.onrender.com/bookings/${bookingId}`,
+        `https://event-management-platform-assignment.onrender.com/bookings/${bookingID}`,
         {
           method: "POST",
           headers: {
@@ -76,9 +80,17 @@ function BodyUserBookList() {
         throw new Error("Network response was not ok.");
       }
 
+      // Update booking list after successful cancellation
+      const updatedBookingList = bookingList.filter(
+        (booking) => booking._id !== bookingID
+      );
+      setBookingList(updatedBookingList);
+
       const data = await response.json();
       console.log("Cancellation request successful:", data);
       toast.success("Cancellation request successful:");
+      // Reload the page after successful cancellation
+      window.location.reload();
     } catch (error) {
       console.error("Error cancelling booking:", error);
       toast.error("Error cancelling booking:", error);
@@ -187,10 +199,16 @@ function BodyUserBookList() {
                   </div>
                 </div>
                 <div>
-                  <form onSubmit={handleCancelBooking}>
+                  <form
+                    onSubmit={(event) =>
+                      handleCancelBooking(event, booking._id)
+                    }
+                  >
                     <button
                       type={"submit"}
-                      className={" text-xs w-[100px] h-[35px] bg-primary text-white cursor-pointer flex justify-center items-center rounded-md"}
+                      className={
+                        " text-xs w-[100px] h-[35px] bg-primary text-white cursor-pointer flex justify-center items-center rounded-md"
+                      }
                     >
                       Cancel Ticket
                     </button>
