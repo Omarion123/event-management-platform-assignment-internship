@@ -41,7 +41,15 @@ export const isAuthenticated = async (
   next: NextFunction
 ) => {
   try {
-    const sessionToken = req.cookies["GHOST-AUTH"];
+    let sessionToken = req.cookies["GHOST-AUTH"];
+    if (!sessionToken) {
+      // Check headers for the session token
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        sessionToken = authHeader.split(" ")[1];
+      }
+    }
+
     if (!sessionToken) {
       return res.status(403).json({
         message: "No session token",
@@ -65,10 +73,19 @@ export const isAuthenticated = async (
 };
 
 
+
 export const checkUserRole = (allowedRoles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const sessionToken = req.cookies["GHOST-AUTH"];
+      let sessionToken = req.cookies["GHOST-AUTH"];
+      if (!sessionToken) {
+        // Check headers for the session token
+        const authHeader = req.headers.authorization;
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+          sessionToken = authHeader.split(" ")[1];
+        }
+      }
+
       if (!sessionToken) {
         return res.status(403).json({
           message: "No session token",
@@ -103,6 +120,7 @@ export const checkUserRole = (allowedRoles: string[]) => {
     }
   };
 };
+
 
 
 // For admin privileges
