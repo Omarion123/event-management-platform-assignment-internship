@@ -51,7 +51,12 @@ export const isAuthenticated = async (
       });
     }
 
-    const sessionToken = authHeader;
+    let sessionToken: string | undefined;
+    if (authHeader.startsWith("Bearer ")) {
+      sessionToken = authHeader.substring(7); // Remove "Bearer " from the beginning
+    } else {
+      sessionToken = authHeader; // If "Bearer " is not present, use the entire header value as sessionToken
+    }
     console.log(sessionToken);
     const existingUser = await getUserBySessionToken(sessionToken);
 
@@ -81,7 +86,12 @@ export const checkUserRole = (allowedRoles: string[]) => {
         });
       }
 
-      const sessionToken = authHeader;
+      let sessionToken: string | undefined;
+      if (authHeader.startsWith("Bearer ")) {
+        sessionToken = authHeader.substring(7); // Remove "Bearer " from the beginning
+      } else {
+        sessionToken = authHeader; // If "Bearer " is not present, use the entire header value as sessionToken
+      }
       console.log(sessionToken);
       const existingUser = await getUserBySessionToken(sessionToken);
       if (!existingUser) {
