@@ -3,22 +3,16 @@ import { FaBell } from "react-icons/fa";
 import { DownOutlined, SmileOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const HeaderAfterLogin = () => {
-  // Retrieve username, profile, and sessionToken from localStorage
   const username = localStorage.getItem("username");
   const profile = localStorage.getItem("profile");
   const sessionToken = localStorage.getItem("sessionToken");
-
-  // Get navigate function from react-router-dom
   const navigate = useNavigate();
-
-  // Check if sessionToken is available
   const isLoggedIn = sessionToken !== null;
 
-  // Function to handle logout
   const handleLogout = () => {
-    // Clear items from localStorage
     localStorage.removeItem("username");
     localStorage.removeItem("profile");
     localStorage.removeItem("sessionToken");
@@ -44,7 +38,11 @@ const HeaderAfterLogin = () => {
       key: "2",
       label: (
         <Link to="/userlist">
-          My booked events
+          {isLoggedIn ? (
+            <>{"My booked events"}</>
+          ) : (
+            <Link onClick={(e) => handleSignInClick()}>Sign In</Link>
+          )}
         </Link>
       ),
       icon: <SmileOutlined />,
@@ -52,26 +50,32 @@ const HeaderAfterLogin = () => {
     {
       key: "4",
       danger: true,
-      label: (
-        <Link onClick={handleLogout}>
-          Logout
-        </Link>
-      ),
+      label: <Link onClick={handleLogout}>Logout</Link>,
     },
   ];
+
+  const handleSignInClick = () => {
+    if (!isLoggedIn) {
+      toast.info("Please log in first!");
+      navigate("/login");
+    }
+  };
 
   return (
     <div className="h-14 bg-secondaryWhite flex justify-between items-center pr-2 pl-2 md:pr-5 md:pl-5">
       <Link to="/">
-        <div className="flex items-center">
-          {/* Display Brand and Icon */}
-        </div>
+        <div className="flex items-center">{/* Display Brand and Icon */}</div>
       </Link>
       <div className="flex gap-2 md:gap-5 items-center">
         <FaBell className="cursor-pointer text-grey" />
         <div className="w-9 h-9 rounded-full">
-          {/* Display Profile Image */}
-          {profile && <img src={profile} alt="profile" className="w-full h-full rounded-full cursor-pointer" />}
+          {profile && (
+            <img
+              src={profile}
+              alt="profile"
+              className="w-full h-full rounded-full cursor-pointer"
+            />
+          )}
         </div>
         <Dropdown
           menu={{
@@ -79,15 +83,14 @@ const HeaderAfterLogin = () => {
           }}
           className="cursor-pointer"
         >
-          <a onClick={(e) => e.preventDefault()}>
+          <a onClick={(e) => handleSignInClick()}>
             <Space>
-              {isLoggedIn ? (
+            {isLoggedIn ? (
                 // Display Username if logged in
                 <>{username}</>
               ) : (
                 // Display "Sign In" link if not logged in
-                <Link to="/login">Sign In</Link>
-              )}
+              <Link to="/login">Sign In</Link>)}
               <DownOutlined />
             </Space>
           </a>
