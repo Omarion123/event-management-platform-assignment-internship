@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import Hero from "../../assets/images/hero.png";
 import image5 from "../../assets/images/hero3.jpeg";
@@ -55,52 +56,51 @@ function BodySingle() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const navigate = useNavigate();
 
-    const bookingData = {
-      eventId: eventId, // Use eventId from params
-      numberOfTickets: count,
-      bookingDate: bookingDate,
-    };
-
-    try {
-      const sessionToken = localStorage.getItem("sessionToken");
-
-      if (!sessionToken) {
-        // Handle case where sessionToken is not available
-        console.error("Session token not found");
-        toast.error("Session token not found");
-        return;
-      }
-      console.log(sessionToken);
-      const response = await fetch(
-        "https://event-management-platform-assignment.onrender.com/bookings",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionToken}`, // Include the sessionToken in the Authorization header
-          },
-          body: JSON.stringify(bookingData),
-        }
-      );
-
-      if (response.ok) {
-        // Handle success
-        console.log("Booking successful");
-        toast.success("Booking successful");
-      } else {
-        // Handle error
-        console.error("Booking failed now");
-        toast.error("Booking failed now");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Error:", error);
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const sessionToken = localStorage.getItem("sessionToken");
+  const isLoggedIn = sessionToken !== null;
+  const bookingData = {
+    eventId: eventId,
+    numberOfTickets: count,
+    bookingDate: bookingDate,
   };
-  
+
+  try {
+    if (!isLoggedIn) {
+      // If user is not logged in, navigate to the login page
+      navigate("/login");
+      toast.info("Please log in first");
+      return;
+    }
+
+    const response = await fetch(
+      "https://event-management-platform-assignment.onrender.com/bookings",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionToken}`,
+        },
+        body: JSON.stringify(bookingData),
+      }
+    );
+
+    if (response.ok) {
+      console.log("Booking successful");
+      toast.success("Booking successful");
+    } else {
+      console.error("Booking failed");
+      toast.error("Booking failed");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    toast.error("Error:", error.message || "Something went wrong");
+  }
+};
+
 
   return (
     <div className="w-full">
