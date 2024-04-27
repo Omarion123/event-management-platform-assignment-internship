@@ -3,7 +3,7 @@ import { get, merge } from "lodash";
 
 import { getUserBySessionToken } from "../db/users";
 
-import { Types } from 'mongoose'; // Import Types from Mongoose
+import { Types } from "mongoose"; // Import Types from Mongoose
 
 export const isOwner = async (
   req: Request,
@@ -12,12 +12,16 @@ export const isOwner = async (
 ) => {
   try {
     const { id } = req.params;
-    const currentUserIdObj = get(req, "identity._id") as Types.ObjectId | undefined; // Use Types.ObjectId
-    const currentUserId = currentUserIdObj ? currentUserIdObj.toString() : undefined; // Convert ObjectId to string
+    const currentUserIdObj = get(req, "identity._id") as
+      | Types.ObjectId
+      | undefined; // Use Types.ObjectId
+    const currentUserId = currentUserIdObj
+      ? currentUserIdObj.toString()
+      : undefined; // Convert ObjectId to string
     // console.log("current user id: ", currentUserId);
     // console.log("type of current user id: ", typeof currentUserId);
     // console.log("id is: ", id);
-    
+
     if (!currentUserId) {
       return res.sendStatus(403); // Send status directly
     }
@@ -27,13 +31,11 @@ export const isOwner = async (
     }
 
     next();
-
   } catch (error) {
     console.log(error);
     return res.sendStatus(400);
   }
 };
-
 
 export const isAuthenticated = async (
   req: Request,
@@ -41,25 +43,21 @@ export const isAuthenticated = async (
   next: NextFunction
 ) => {
   try {
-    let sessionToken = req.cookies["GHOST-AUTH"];
-    if (!sessionToken) {
-      // Check headers for the session token
-      const authHeader = req.headers.authorization;
-      if (authHeader && authHeader.startsWith("Bearer ")) {
-        sessionToken = authHeader.split(" ")[1];
-      }
-    }
-
-    if (!sessionToken) {
+    const authHeader = req.headers.authorization;
+    console.log(authHeader);
+    if (authHeader === undefined) {
       return res.status(403).json({
-        message: "No session token",
+        message: "Invalid session token undefined",
       });
     }
 
+    const sessionToken = authHeader;
+    console.log(sessionToken);
     const existingUser = await getUserBySessionToken(sessionToken);
+
     if (!existingUser) {
       return res.status(403).json({
-        message: "No session token and user",
+        message: "Invalid session token ",
       });
     }
 
@@ -72,26 +70,19 @@ export const isAuthenticated = async (
   }
 };
 
-
-
 export const checkUserRole = (allowedRoles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let sessionToken = req.cookies["GHOST-AUTH"];
-      if (!sessionToken) {
-        // Check headers for the session token
-        const authHeader = req.headers.authorization;
-        if (authHeader && authHeader.startsWith("Bearer ")) {
-          sessionToken = authHeader.split(" ")[1];
-        }
-      }
-
-      if (!sessionToken) {
+      const authHeader = req.headers.authorization;
+      console.log(authHeader);
+      if (authHeader === undefined) {
         return res.status(403).json({
-          message: "No session token",
+          message: "Invalid session token undefined",
         });
       }
 
+      const sessionToken = authHeader;
+      console.log(sessionToken);
       const existingUser = await getUserBySessionToken(sessionToken);
       if (!existingUser) {
         return res.status(403).json({
@@ -100,13 +91,13 @@ export const checkUserRole = (allowedRoles: string[]) => {
       }
 
       // Check if the user is an admin
-      if (allowedRoles.includes('admin') && existingUser.role === 'admin') {
+      if (allowedRoles.includes("admin") && existingUser.role === "admin") {
         merge(req, { identity: existingUser });
         return next();
       }
 
       // Check if the user is a regular user
-      if (allowedRoles.includes('user') && existingUser.role === 'user') {
+      if (allowedRoles.includes("user") && existingUser.role === "user") {
         merge(req, { identity: existingUser });
         return next();
       }
@@ -121,10 +112,8 @@ export const checkUserRole = (allowedRoles: string[]) => {
   };
 };
 
-
-
 // For admin privileges
-export const isAdmin = checkUserRole(['admin']);
+export const isAdmin = checkUserRole(["admin"]);
 
 // For user privileges
-export const isUser = checkUserRole(['user']);
+export const isUser = checkUserRole(["user"]);
