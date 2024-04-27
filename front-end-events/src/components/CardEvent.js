@@ -1,9 +1,9 @@
 import React from 'react';
 import { FaCalendar, FaLocationArrow } from 'react-icons/fa'; 
 
-const Card = ({ RunImage, title, availableTickets, date, location }) => {
+const Card = ({ RunImage, title, availableTickets, date, location, onClick }) => {
   return (
-    <div className="md:w-[376px] h-[353px] rounded-md border cursor-pointer">
+    <div className="md:w-[376px] h-[353px] rounded-md border cursor-pointer" onClick={onClick}>
       <img src={RunImage} className="h-[207px] w-full" alt={title} />
       <div className="p-5">
         <div className="flex justify-between">

@@ -20,7 +20,7 @@ const AppRoutes = () => {
     <Router>
       <Routes>
         <Route exact path="/" element={<HomeLayout />} />
-        <Route path="/single/:123" element={<Article />} />
+        <Route path="/single/:eventId" element={<Article />} />
         <Route path="/userlist" element={<UserBookList />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

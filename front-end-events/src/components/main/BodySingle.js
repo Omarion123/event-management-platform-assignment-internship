@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Hero from "../../assets/images/hero.png";
 import image5 from "../../assets/images/hero3.jpeg";
-import CustomButton from "../CustomButton";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import {
@@ -14,6 +14,8 @@ import {
 } from "react-icons/fa";
 
 function BodySingle() {
+  const { eventId } = useParams(); // Extract eventId from params
+  console.log("eventId is: ", eventId);
   const [eventData, setEventData] = useState(null);
   const [count, setCount] = useState(1); // Initial count is 1
   const pricePerTicket = 90;
@@ -23,7 +25,7 @@ function BodySingle() {
     const fetchEvent = async () => {
       try {
         const response = await fetch(
-          "https://event-management-platform-assignment.onrender.com/events/662a951822b042e0d4488eee",
+          `https://event-management-platform-assignment.onrender.com/events/${eventId}`, // Use eventId from params in the URL
           {
             method: "GET",
           }
@@ -41,7 +43,7 @@ function BodySingle() {
     };
 
     fetchEvent();
-  }, []);
+  }, [eventId]); // Add eventId to the dependency array
 
   const handleIncrement = () => {
     setCount(count + 1);
@@ -55,16 +57,16 @@ function BodySingle() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const bookingData = {
-      eventId: "662a1a0fdf18ffab577d8117", // Assuming eventData has an id property
+      eventId: eventId, // Use eventId from params
       numberOfTickets: count,
       bookingDate: bookingDate,
     };
-  
+
     try {
       const sessionToken = localStorage.getItem("sessionToken");
-  
+
       if (!sessionToken) {
         // Handle case where sessionToken is not available
         console.error("Session token not found");
@@ -72,27 +74,30 @@ function BodySingle() {
         return;
       }
       console.log(sessionToken);
-      const response = await fetch('https://event-management-platform-assignment.onrender.com/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionToken}`, // Include the sessionToken in the Authorization header
-        },
-        body: JSON.stringify(bookingData),
-      });
-  
+      const response = await fetch(
+        "https://event-management-platform-assignment.onrender.com/bookings",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionToken}`, // Include the sessionToken in the Authorization header
+          },
+          body: JSON.stringify(bookingData),
+        }
+      );
+
       if (response.ok) {
         // Handle success
-        console.log('Booking successful');
-        toast.success('Booking successful');
+        console.log("Booking successful");
+        toast.success("Booking successful");
       } else {
         // Handle error
-        console.error('Booking failed now');
-        toast.error('Booking failed now');
+        console.error("Booking failed now");
+        toast.error("Booking failed now");
       }
     } catch (error) {
-      console.error('Error:', error);
-      toast.error('Error:', error);
+      console.error("Error:", error);
+      toast.error("Error:", error);
     }
   };
   
