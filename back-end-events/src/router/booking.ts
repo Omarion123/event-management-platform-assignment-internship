@@ -10,7 +10,7 @@ import {
 import { isAuthenticated, isAdmin, isUser } from '../middlewares';
 
 export default (router: express.Router) => {
-  router.get('/bookings', isAdmin, getAllBookingsController);
+  router.get('/bookings', isAdmin, isUser, getAllBookingsController);
   router.get('/bookings/:id', isAdmin, getBookingController);
   router.post('/bookings', isAuthenticated, isUser, createBookingController);
   router.post('/bookings/:id', isAuthenticated, isUser, cancelBookingController);
