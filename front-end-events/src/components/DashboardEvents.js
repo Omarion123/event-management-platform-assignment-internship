@@ -10,13 +10,13 @@ function DashboardEvents() {
   const [showModal, setShowModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    title: '',
-    date: '',
-    location: '',
-    ticketAvailability: '',
-    organizer: '',
+    title: "",
+    date: "",
+    location: "",
+    ticketAvailability: "",
+    organizer: "",
     profile: null, // File will be stored here
-    description: '',
+    description: "",
   });
   console.log("formData are: ", formData);
 
@@ -115,41 +115,41 @@ function DashboardEvents() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-  
-    const url = 'https://event-management-platform-assignment.onrender.com/events';
+
+    const url =
+      "https://event-management-platform-assignment.onrender.com/events";
     const formDataToSend = new FormData();
-  
+
     for (let key in formData) {
       formDataToSend.append(key, formData[key]);
     }
-  
-    const sessionToken = localStorage.getItem('sessionToken');
-  
+
+    const sessionToken = localStorage.getItem("sessionToken");
+
     try {
       const response = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         body: formDataToSend,
         headers: {
           Authorization: `Bearer ${sessionToken}`, // Add Authorization header with Bearer token
         },
       });
-  
+
       if (response.ok) {
         // Handle success
-        console.log('Event created successfully!');
-        toast.success('Event created successfully!');
+        console.log("Event created successfully!");
+        toast.success("Event created successfully!");
+        setIsModalOpen(false);
+        window.location.reload();
       } else {
         // Handle error
-        console.error('Error creating event');
-        toast.error('Error creating event');
+        console.error("Error creating event");
+        toast.error("Error creating event");
       }
     } catch (error) {
-      console.error('Error creating event:', error);
+      console.error("Error creating event:", error);
     }
   };
-  
-
-  
 
   return (
     <div className="pl-5 pr-5 mt-10">
