@@ -1,9 +1,13 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from 'react';
 import CustomButton from "./CustomButton";
-import { Space, Table, Tag } from "antd";
+import { Table, Button, Space, Modal } from 'antd';
 
-function DashboardBooking() {
+const Bookings = () => {
   const [bookingsData, setBookingsData] = useState([]);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken');
 
@@ -26,6 +30,27 @@ function DashboardBooking() {
         console.error("Error fetching bookings data:", error);
       });
   }, []);
+
+  const handleUpdate = (record) => {
+    setSelectedBooking(record);
+    setIsUpdateModalVisible(true);
+  };
+
+  const handleDelete = (record) => {
+    setSelectedBooking(record);
+    setIsDeleteModalVisible(true);
+  };
+
+  const handleUpdateConfirm = () => {
+    // Add code to handle update logic here
+    setIsUpdateModalVisible(false);
+  };
+
+  const handleDeleteConfirm = () => {
+    // Add code to handle delete logic here
+    setIsDeleteModalVisible(false);
+  };
+
   const columns = [
     {
       title: "Booking ID",
@@ -52,20 +77,48 @@ function DashboardBooking() {
       dataIndex: "status",
       key: "status",
     },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <Button type="primary" onClick={() => handleUpdate(record)}>
+            Update
+          </Button>
+          <Button type="danger" onClick={() => handleDelete(record)}>
+            Delete
+          </Button>
+        </Space>
+      ),
+    },
   ];
+
   return (
-    <div className="pl-5 pr-5 mt-10">
-      <div className="flex flex-col gap-4">
-        <p className="font-bold text-3xl">Booking</p>
-        <div>
-          <CustomButton style={"!w-[150px] !h-10"}>New Booking</CustomButton>
-        </div>
-      </div>
-      <div className="mt-10">
+    <div className="mt-10">
       <Table columns={columns} dataSource={bookingsData} className="overflow-hidden"/>
-    </div>
+
+      <Modal
+        title="Update Booking"
+        visible={isUpdateModalVisible}
+        onOk={handleUpdateConfirm}
+        onCancel={() => setIsUpdateModalVisible(false)}
+      >
+        {/* Add form or input fields for updating booking */}
+        {/* For example: */}
+        {/* <input type="text" value={selectedBooking.numberOfTickets} onChange={(e) => setSelectedBooking({ ...selectedBooking, numberOfTickets: e.target.value })} /> */}
+      </Modal>
+
+      <Modal
+        title="Delete Booking"
+        visible={isDeleteModalVisible}
+        onOk={handleDeleteConfirm}
+        onCancel={() => setIsDeleteModalVisible(false)}
+        okButtonProps={{ danger: true }}
+      >
+        Are you sure you want to delete this booking?
+      </Modal>
     </div>
   );
-}
+};
 
-export default DashboardBooking;
+export default Bookings;
