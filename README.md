@@ -1,6 +1,6 @@
 the project is well implemented figma link: https://www.figma.com/file/hZDspqcNpsZBPm3Lgylo9R/Event-managing?type=design&node-id=1%3A3960&mode=design&t=H3eZGsbwwcImzgjQ-1
 
-back-end is hosted on render: https://event-management-platform-assignment.onrender.com
+back-end work perfectly fine and is hosted on render: https://event-management-platform-assignment.onrender.com
 
 what has been done:
 
