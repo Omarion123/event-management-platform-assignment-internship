@@ -4,6 +4,8 @@ import { DownOutlined, SmileOutlined } from "@ant-design/icons";
 import { Dropdown, Space } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Icon from "../../assets/images/Image 384.svg";
+import Brand from "../../assets/images/YourEvent.svg";
 
 const HeaderAfterLogin = () => {
   const username = localStorage.getItem("username");
@@ -64,7 +66,10 @@ const HeaderAfterLogin = () => {
   return (
     <div className="h-14 bg-secondaryWhite flex justify-between items-center pr-2 pl-2 md:pr-5 md:pl-5">
       <Link to="/">
-        <div className="flex items-center">{/* Display Brand and Icon */}</div>
+        <div className="flex items-center">
+          <img src={Icon} className="h-[35px]" alt="Icon" />
+          <img src={Brand} className="h-[20px]" alt="Brand" />
+        </div>
       </Link>
       <div className="flex gap-2 md:gap-5 items-center">
         <FaBell className="cursor-pointer text-grey" />
@@ -85,12 +90,13 @@ const HeaderAfterLogin = () => {
         >
           <a onClick={(e) => handleSignInClick()}>
             <Space>
-            {isLoggedIn ? (
+              {isLoggedIn ? (
                 // Display Username if logged in
                 <>{username}</>
               ) : (
                 // Display "Sign In" link if not logged in
-              <Link to="/login">Sign In</Link>)}
+                <Link to="/login">Sign In</Link>
+              )}
               <DownOutlined />
             </Space>
           </a>
