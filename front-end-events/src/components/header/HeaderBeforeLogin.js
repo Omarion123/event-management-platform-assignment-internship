@@ -11,7 +11,7 @@ const HeaderBeforeLogin = () => {
         <img src={Brand} className="h-[20px]" alt="Brand" />
       </div>
       <div className="flex gap-2 md:gap-5">
-        <CustomButton to="/register" style="bg-white text-blue-500 border-2 border-primary">
+        <CustomButton to="/register" style="bg-white !text-black border-2 border-primary">
           Register
         </CustomButton>
         <CustomButton to="/login">Login</CustomButton>
