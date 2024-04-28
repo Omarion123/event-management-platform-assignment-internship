@@ -9,6 +9,7 @@ function DashboardEvents() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [eventId, setEventId] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -18,7 +19,8 @@ function DashboardEvents() {
     profile: null, // File will be stored here
     description: "",
   });
-  console.log("formData are: ", formData);
+  // console.log("formData are: ", formData);
+  console.log("Event id is: ", eventId);
 
   useEffect(() => {
     // Fetch data from the API endpoint
@@ -41,6 +43,7 @@ function DashboardEvents() {
     // Logic to update the event
     console.log("Updating event:", record);
     setSelectedEvent(record);
+    setEventId(record._id);
     setShowModal(true);
   };
 
@@ -150,6 +153,43 @@ function DashboardEvents() {
       console.error("Error creating event:", error);
     }
   };
+  const handleFormSubmitEdit = async (e) => {
+    e.preventDefault();
+
+    const url =
+      `https://event-management-platform-assignment.onrender.com/events/${eventId}`;
+    const formDataToSend = new FormData();
+
+    for (let key in formData) {
+      formDataToSend.append(key, formData[key]);
+    }
+
+    const sessionToken = localStorage.getItem("sessionToken");
+
+    try {
+      const response = await fetch(url, {
+        method: "PATCH",
+        body: formDataToSend,
+        headers: {
+          Authorization: `Bearer ${sessionToken}`, // Add Authorization header with Bearer token
+        },
+      });
+
+      if (response.ok) {
+        // Handle success
+        console.log("Event created successfully!");
+        toast.success("Event created successfully!");
+        setIsModalOpen(false);
+        window.location.reload();
+      } else {
+        // Handle error
+        console.error("Error creating event");
+        toast.error("Error creating event");
+      }
+    } catch (error) {
+      console.error("Error creating event:", error);
+    }
+  };
 
   return (
     <div className="pl-5 pr-5 mt-10">
@@ -172,7 +212,122 @@ function DashboardEvents() {
         onCancel={() => setShowModal(false)}
         footer={null}
       >
-        {selectedEvent && <p>Event ID: {selectedEvent._id}</p>}
+        <form onSubmit={handleFormSubmitEdit} className="max-w-md mx-auto">
+          <div className="mb-4">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Title
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              placeholder="Enter event title"
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="date"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Date
+            </label>
+            <input
+              type="date"
+              id="date"
+              name="date"
+              value={formData.date}
+              onChange={handleInputChange}
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="location"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Location
+            </label>
+            <input
+              type="text"
+              id="location"
+              value={formData.location}
+              onChange={handleInputChange}
+              name="location"
+              placeholder="Enter event location"
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="ticketAvailability"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Ticket Availability
+            </label>
+            <input
+              type="number"
+              id="ticketAvailability"
+              name="ticketAvailability"
+              value={formData.ticketAvailability}
+              onChange={handleInputChange}
+              placeholder="Enter ticket availability"
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="profile"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Profile Image
+            </label>
+            <input
+              type="file"
+              id="profile"
+              onChange={handleFileChange}
+              name="profile"
+              accept="image/*"
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Description
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              rows={4}
+              placeholder="Enter event description"
+              required
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
+          </div>
+          <div>
+            <button
+              type="submit"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Create Event
+            </button>
+          </div>
+        </form>
       </Modal>
       <Modal
         title="Event creation"
