@@ -1,79 +1,56 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import CustomButton from "./CustomButton";
 import { Space, Table, Tag } from "antd";
 
 function DashboardBooking() {
+  const [bookingsData, setBookingsData] = useState([]);
+  useEffect(() => {
+    const sessionToken = localStorage.getItem('sessionToken');
+
+    if (!sessionToken) {
+      console.error("Session token not found in localStorage.");
+      return;
+    }
+
+    fetch("https://event-management-platform-assignment.onrender.com/bookingsadmin", {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${sessionToken}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setBookingsData(data.bookings);
+      })
+      .catch((error) => {
+        console.error("Error fetching bookings data:", error);
+      });
+  }, []);
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => <a>{text}</a>,
+      title: "Booking ID",
+      dataIndex: "_id",
+      key: "_id",
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "User ID",
+      dataIndex: "userId",
+      key: "userId",
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
+      title: "Number of Tickets",
+      dataIndex: "numberOfTickets",
+      key: "numberOfTickets",
     },
     {
-      title: "Tags",
-      key: "tags",
-      dataIndex: "tags",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? "geekblue" : "green";
-            if (tag === "loser") {
-              color = "volcano";
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
+      title: "Booking Date",
+      dataIndex: "bookingDate",
+      key: "bookingDate",
     },
     {
-      title: "Action",
-      key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <a>Invite {record.name}</a>
-          <a>Delete</a>
-        </Space>
-      ),
-    },
-  ];
-  const data = [
-    
-    
-    {
-      key: "1",
-      name: "John Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-      tags: ["nice", "developer"],
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      age: 42,
-      address: "London No. 1 Lake Park",
-      tags: ["loser"],
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      age: 32,
-      address: "Sydney No. 1 Lake Park",
-      tags: ["cool", "teacher"],
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
     },
   ];
   return (
@@ -81,12 +58,12 @@ function DashboardBooking() {
       <div className="flex flex-col gap-4">
         <p className="font-bold text-3xl">Booking</p>
         <div>
-          <CustomButton style={"w-[100px]"}>New Event</CustomButton>
+          <CustomButton style={"!w-[150px] !h-10"}>New Booking</CustomButton>
         </div>
       </div>
       <div className="mt-10">
-        <Table columns={columns} dataSource={data} className="overflow-hidden"/>
-      </div>
+      <Table columns={columns} dataSource={bookingsData} className="overflow-hidden"/>
+    </div>
     </div>
   );
 }
