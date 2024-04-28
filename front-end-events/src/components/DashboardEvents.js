@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import CustomButton from "./CustomButton";
 import { Space, Table, Tag } from "antd";
 import { Button, Form, Input, Modal, message } from "antd";
-import { useForm } from "antd/lib/form/Form";
 import { toast } from "react-toastify";
 
 function DashboardEvents() {
@@ -10,8 +9,16 @@ function DashboardEvents() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { TextArea } = Input;
-  const [form] = useForm();
+  const [formData, setFormData] = useState({
+    title: '',
+    date: '',
+    location: '',
+    ticketAvailability: '',
+    organizer: '',
+    profile: null, // File will be stored here
+    description: '',
+  });
+  console.log("formData are: ", formData);
 
   useEffect(() => {
     // Fetch data from the API endpoint
@@ -83,66 +90,72 @@ function DashboardEvents() {
   const showModalCreateEvent = () => {
     setIsModalOpen(true);
   };
-  // const handleOk = () => {
-  //   setIsModalOpen(false);
-  // };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const handleFormSubmit = (values) => {
-    console.log("Form values:", values);
-    // Logic to handle form submission (e.g., API call to create a new event)
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
-  const handleOk = async () => {
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({
+      ...formData,
+      profile: file,
+    });
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+  
+    const url = 'https://event-management-platform-assignment.onrender.com/events';
+    const formDataToSend = new FormData();
+  
+    for (let key in formData) {
+      formDataToSend.append(key, formData[key]);
+    }
+  
+    const sessionToken = localStorage.getItem('sessionToken');
+  
     try {
-      const formData = new FormData(); // Create a new FormData object
-
-      // Append form data to the FormData object
-      formData.append("title", form.getFieldValue("title"));
-      formData.append("date", form.getFieldValue("date"));
-      formData.append("location", form.getFieldValue("location"));
-      formData.append(
-        "ticketAvailability",
-        form.getFieldValue("ticketAvailability")
-      );
-      formData.append("organizer", form.getFieldValue("organizer"));
-      formData.append("profile", form.getFieldValue("profile").file);
-      formData.append("description", form.getFieldValue("description"));
-
-      const sessionToken = localStorage.getItem("sessionToken");
-
-      const response = await fetch(
-        "https://event-management-platform-assignment.onrender.com/events",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${sessionToken}`,
-          },
-          body: formData, // Pass the FormData object as the body
-        }
-      );
-
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formDataToSend,
+        headers: {
+          Authorization: `Bearer ${sessionToken}`, // Add Authorization header with Bearer token
+        },
+      });
+  
       if (response.ok) {
-        console.log("Event created successfully");
-        toast.success("Event created successfully");
-        handleCancel(); // Close the modal after successful creation
+        // Handle success
+        console.log('Event created successfully!');
+        toast.success('Event created successfully!');
       } else {
-        console.error("Failed to create event");
-        toast.error("Failed to create event");
+        // Handle error
+        console.error('Error creating event');
+        toast.error('Error creating event');
       }
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Error:", error.message || "Something went wrong");
+      console.error('Error creating event:', error);
     }
   };
+  
+
+  
 
   return (
     <div className="pl-5 pr-5 mt-10">
       <div className="flex flex-col gap-4">
         <p className="font-bold text-3xl">Events</p>
-        <div onClick={showModalCreateEvent}>
+        <div className="inline-block" onClick={showModalCreateEvent}>
           <CustomButton style={"w-[150px !px-5]"}>New Event</CustomButton>
         </div>
       </div>
@@ -180,6 +193,8 @@ function DashboardEvents() {
               type="text"
               id="title"
               name="title"
+              value={formData.title}
+              onChange={handleInputChange}
               placeholder="Enter event title"
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -196,6 +211,8 @@ function DashboardEvents() {
               type="date"
               id="date"
               name="date"
+              value={formData.date}
+              onChange={handleInputChange}
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
@@ -210,6 +227,8 @@ function DashboardEvents() {
             <input
               type="text"
               id="location"
+              value={formData.location}
+              onChange={handleInputChange}
               name="location"
               placeholder="Enter event location"
               required
@@ -227,6 +246,8 @@ function DashboardEvents() {
               type="number"
               id="ticketAvailability"
               name="ticketAvailability"
+              value={formData.ticketAvailability}
+              onChange={handleInputChange}
               placeholder="Enter ticket availability"
               required
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
@@ -242,6 +263,8 @@ function DashboardEvents() {
             <input
               type="text"
               id="organizer"
+              value={formData.organizer}
+              onChange={handleInputChange}
               name="organizer"
               placeholder="Enter organizer name"
               required
@@ -258,6 +281,7 @@ function DashboardEvents() {
             <input
               type="file"
               id="profile"
+              onChange={handleFileChange}
               name="profile"
               accept="image/*"
               required
@@ -274,6 +298,8 @@ function DashboardEvents() {
             <textarea
               id="description"
               name="description"
+              value={formData.description}
+              onChange={handleInputChange}
               rows={4}
               placeholder="Enter event description"
               required
