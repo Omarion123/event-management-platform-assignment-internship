@@ -1,4 +1,5 @@
 import express from 'express';
+import upload from '../middlewares/multer';
 import {
   getAllBookingsController,
   getBookingController,
@@ -15,6 +16,6 @@ export default (router: express.Router) => {
   router.get('/bookingsadmin', isAdmin, getAllBookingsController);
   router.post('/bookings', isAuthenticated, isUser, createBookingController);
   router.post('/bookings/:id', isAuthenticated, isUser, cancelBookingController);
-  router.patch('/bookings/:id', isAuthenticated,isAdmin, updateBookingController);
+  router.patch('/bookings/:id', isAuthenticated,isAdmin,upload.single("profile"), updateBookingController);
   router.delete('/bookings/:id', isAuthenticated, isAdmin, deleteBookingController);
 };

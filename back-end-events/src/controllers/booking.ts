@@ -99,6 +99,10 @@ export const updateBookingController = async (req: Request, res: Response, next:
   try {
     const { id } = req.params;
     const { numberOfTickets, bookingDate, status } = req.body;
+    console.log("the id is: ", id);
+    
+    console.log(`numberOfTickets: ${numberOfTickets}, bookingDate: ${bookingDate}, status: ${status}, `);
+    
 
     // Check if all required fields are present in the request body
     if (!numberOfTickets || !bookingDate || !status) {
