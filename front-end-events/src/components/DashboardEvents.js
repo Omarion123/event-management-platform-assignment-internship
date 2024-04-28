@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CustomButton from "./CustomButton";
-import { Space, Table, Tag } from "antd";
-import { Button, Form, Input, Modal, message } from "antd";
+import { Space, Table } from "antd";
+import { Button, Modal } from "antd";
 import { toast } from "react-toastify";
 
 function DashboardEvents() {
@@ -9,6 +9,7 @@ function DashboardEvents() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [eventId, setEventId] = useState(null);
   const [formData, setFormData] = useState({
     title: "",
@@ -34,9 +35,50 @@ function DashboardEvents() {
       });
   }, []);
 
+  const showModalDelete = () => {
+    setOpen(true);
+  };
+  const hideModalDeleteWithoutDelete = () => {
+    setOpen(false);
+  };
+  const hideModalDelete = async (e) => {
+    e.preventDefault();
+    const sessionToken = localStorage.getItem("sessionToken"); // Get sessionToken from localStorage
+
+    try {
+      const response = await fetch(
+        `https://event-management-platform-assignment.onrender.com/events/${eventId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${sessionToken}`, // Include Authorization header with Bearer token
+          },
+        }
+      );
+
+      if (response.ok) {
+        // Handle successful deletion
+        toast.success("Event deleted successfully!");
+        setOpen(false); // Close modal
+        window.location.reload();
+      } else {
+        // Handle deletion failure
+        const data = await response.json();
+        console.error("Error deleting event:", data.message);
+        toast.error("Error deleting event");
+        setOpen(false); // Close modal
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      toast.error("Error deleting event");
+      setOpen(false); // Close modal
+    }
+  };
+
   const handleDelete = (record) => {
     // Logic to delete the event
-    console.log("Deleting event:", record);
+    setEventId(record._id);
+    showModalDelete();
   };
 
   const handleUpdate = (record) => {
@@ -156,8 +198,7 @@ function DashboardEvents() {
   const handleFormSubmitEdit = async (e) => {
     e.preventDefault();
 
-    const url =
-      `https://event-management-platform-assignment.onrender.com/events/${eventId}`;
+    const url = `https://event-management-platform-assignment.onrender.com/events/${eventId}`;
     const formDataToSend = new FormData();
 
     for (let key in formData) {
@@ -470,6 +511,16 @@ function DashboardEvents() {
             </button>
           </div>
         </form>
+      </Modal>
+      <Modal
+        title="Deleting Event!"
+        open={open}
+        onOk={hideModalDelete}
+        onCancel={hideModalDeleteWithoutDelete}
+        okText="Delete"
+        cancelText="Cancel"
+      >
+        <p>Are you sure to delete this event?</p>
       </Modal>
     </div>
   );
