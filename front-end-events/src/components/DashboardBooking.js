@@ -9,13 +9,12 @@ const Bookings = () => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [bookingId, setBookingId] = useState(null);
   const [formData, setFormData] = useState({
-    "numberOfTickets": "",
-    "bookingDate": "",
-    "status": "",
+    numberOfTickets: "",
+    bookingDate: "",
+    status: "",
   });
 
-  console.log(formData);
-  
+  console.log(bookingId);
 
   useEffect(() => {
     const sessionToken = localStorage.getItem("sessionToken");
@@ -60,6 +59,7 @@ const Bookings = () => {
   const handleDelete = (record) => {
     setSelectedBooking(record);
     setIsDeleteModalVisible(true);
+    setBookingId(record._id);
   };
 
   const handleUpdateConfirm = () => {
@@ -67,9 +67,40 @@ const Bookings = () => {
     setIsUpdateModalVisible(false);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async (e) => {
     // Add code to handle delete logic here
-    setIsDeleteModalVisible(false);
+    e.preventDefault();
+    const sessionToken = localStorage.getItem("sessionToken"); // Get sessionToken from localStorage
+
+    try {
+      const response = await fetch(
+        `https://event-management-platform-assignment.onrender.com/bookings/${bookingId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${sessionToken}`, // Include Authorization header with Bearer token
+          },
+        }
+      );
+
+      if (response.ok) {
+        // Handle successful deletion
+        toast.success("Booking deleted successfully!");
+        setIsDeleteModalVisible(false);
+
+        window.location.reload();
+      } else {
+        // Handle deletion failure
+        const data = await response.json();
+        console.error("Error deleting Booking:", data.message);
+        toast.error("Error deleting Booking");
+        setIsDeleteModalVisible(false);
+      }
+    } catch (error) {
+      console.error("Error deleting Booking:", error);
+      toast.error("Error deleting Booking");
+      setIsDeleteModalVisible(false);
+    }
   };
 
   const columns = [
