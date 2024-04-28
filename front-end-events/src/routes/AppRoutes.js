@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 
 const AppRoutes = () => {
   const sessionToken = localStorage.getItem("sessionToken");
+  const role = localStorage.getItem("role");
   const isLoggedIn = sessionToken !== null;
 
   // Use useEffect to show toast message only once when component mounts
@@ -43,7 +44,7 @@ const AppRoutes = () => {
         {/* Protected Routes */}
         <Route
           path="/dashboard"
-          element={!isLoggedIn ? <Navigate to="/login" replace /> : <DashLayout />}
+          element={!isLoggedIn && !role==="admin" ? <Navigate to="/login" replace /> : <DashLayout />}
         >
           <Route index element={<DashboardMain />} />
           <Route path="/dashboard/event" element={<DashboardEvents />} />{" "}

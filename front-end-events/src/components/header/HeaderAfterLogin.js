@@ -18,6 +18,8 @@ const HeaderAfterLogin = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("profile");
     localStorage.removeItem("sessionToken");
+    localStorage.removeItem("role");
+    localStorage.removeItem("userId");
     navigate("/");
     window.location.reload();
   };

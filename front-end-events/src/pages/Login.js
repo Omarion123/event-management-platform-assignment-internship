@@ -37,14 +37,21 @@ function Login() {
       localStorage.setItem("userId", user._id);
       localStorage.setItem("username", user.username);
       localStorage.setItem("profile", user.profile);
+      localStorage.setItem("role", user.role);
 
       // Handle cookie if needed (not recommended for security reasons, see note below)
       if (cookie) {
         document.cookie = `GHOST-AUTH=${cookie}`;
       }
-
-      toast.success("Successfully Logged!");
-      navigate("/");
+      if (user.role === "user") {
+        toast.success("Successfully Logged!");
+        navigate("/");
+      } else if (user.role === "admin") {
+        toast.success("Successfully Logged!");
+        navigate("/dashboard");
+      } else {
+        toast.error("Can't login user!");
+      }
     } else {
       toast.error("Can't log in!");
     }
