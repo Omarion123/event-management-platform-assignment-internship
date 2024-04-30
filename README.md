@@ -4,10 +4,12 @@ back-end work perfectly fine and is hosted on render: https://event-management-p
 
 what has been done:
 
-authentication: -Login // back-end -Logout // back-end
+authentication: -Login depend on user who logged in will be redirected to respective page where he or she is user or admin
 
-event: -get all event // back-end -get single event // back-end -create event // back-end work but not integrated -update event // back-end work but not integrated -delete event // back-end work but not integrated
+event-crud is working perfectly fine for both front end and back-end
 
-booking: -get all booking // back-end -get single booking // back-end -create booking // back-end work but not integrated -cancel booking // back-end work but not integrated -update booking // back-end work but not integrated delete booking // back-end work but not integrated
+booking-crud is working perfectly fine for both back-end and fron-end
+
+and both dash
 
 for user created will have user = role; if you want to get admin priveledge use: omar@gmail.com and pass: 123
